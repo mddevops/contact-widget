@@ -23,7 +23,7 @@
         markers: @js($markerIcons),
         icons: @js($buttonIconSvgs),
         settingDefaults: @js($settingDefaults),
-        imageUrl: null,
+        previewImageUrl: @entangle('previewImageUrl').live,
         previewDevice: 'desktop',
 
         settings() {
@@ -148,7 +148,7 @@
                 alignSelf: 'stretch',
                 minHeight: '100%',
                 backgroundColor: 'transparent',
-                backgroundImage: this.imageUrl ? `url('${this.imageUrl}')` : 'none',
+                backgroundImage: this.previewImageUrl ? `url('${this.previewImageUrl}')` : 'none',
                 backgroundSize: `${this.imageScale()}%`,
                 backgroundPosition: `${this.imagePositionX()} ${this.imagePositionY()}`,
                 backgroundRepeat: 'no-repeat',
@@ -168,7 +168,7 @@
                 height: `${this.mobileImageHeight()}px`,
                 minHeight: '120px',
                 backgroundColor: 'transparent',
-                backgroundImage: this.imageUrl ? `url('${this.imageUrl}')` : 'none',
+                backgroundImage: this.previewImageUrl ? `url('${this.previewImageUrl}')` : 'none',
                 backgroundSize: `${this.mobileImageScale()}%`,
                 backgroundPosition: `${x} ${y}`,
                 backgroundRepeat: 'no-repeat',
@@ -226,20 +226,6 @@
             previewDevice = data.preview_device;
         }
     "
-    x-effect="
-        const image = data?.image;
-        if (! image) {
-            imageUrl = null;
-            return;
-        }
-        if (typeof image === 'string' && image !== '') {
-            imageUrl = '/storage/' + image.replace(/^\\/?storage\\//, '');
-            return;
-        }
-        if (Array.isArray(image) && image.length) {
-            $wire.call('getPopupPreviewImageUrl').then(url => { if (url) imageUrl = url; });
-        }
-    "
 >
     <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-2">
         <div class="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
@@ -293,14 +279,14 @@
             {{-- Desktop --}}
             <div x-show="previewDevice === 'desktop'" class="cbp-layout" :class="layoutClass()" style="align-items: stretch;">
                 <div
-                    x-show="showDesktopImage() && imageUrl"
+                    x-show="showDesktopImage() && previewImageUrl"
                     class="cbp-media"
                     :style="desktopMediaStyle()"
                     role="img"
                     aria-hidden="true"
                 ></div>
                 <div
-                    x-show="showDesktopImage() && ! imageUrl"
+                    x-show="showDesktopImage() && ! previewImageUrl"
                     class="cbp-media cbp-media--empty flex items-center justify-center text-sm text-gray-500"
                     :style="{
                         width: imageWidthPx() + 'px',
@@ -323,14 +309,14 @@
                 style="min-height: 480px;"
             >
                 <div
-                    x-show="showMobileImage() && imageUrl"
+                    x-show="showMobileImage() && previewImageUrl"
                     class="cbp-media cbp-media--mobile"
                     :style="mobileMediaStyle()"
                     role="img"
                     aria-hidden="true"
                 ></div>
                 <div
-                    x-show="showMobileImage() && ! imageUrl"
+                    x-show="showMobileImage() && ! previewImageUrl"
                     class="cbp-media cbp-media--mobile cbp-media--empty flex items-center justify-center text-sm text-gray-500"
                     :style="{
                         width: mobileImageWidthPx() + 'px',

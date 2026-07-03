@@ -7,26 +7,108 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 trait HasPopupPreviewImage
 {
-    public function getPopupPreviewImageUrl(): ?string
+    public ?string $previewImageUrl = null;
+
+    protected function afterFill(): void
     {
-        $image = $this->data['image'] ?? null;
+        $this->refreshPreviewImageUrl();
+    }
 
-        if (is_array($image) && $image !== []) {
-            $path = array_values($image)[0] ?? null;
+    public function refreshPreviewImageUrl(): void
+    {
+        $this->previewImageUrl = $this->getPopupPreviewImageUrl();
+    }
 
-            if ($path instanceof TemporaryUploadedFile) {
-                return $path->temporaryUrl();
-            }
+    public function updatedDataImage(mixed $value): void
+    {
+        if (blank(data_get($this->form->getRawState(), 'image'))) {
+            $this->previewImageUrl = null;
 
-            if (is_string($path) && $path !== '') {
-                return Storage::disk('public')->url($path);
-            }
+            return;
         }
 
-        if (is_string($image) && $image !== '') {
-            return Storage::disk('public')->url($image);
+        $this->refreshPreviewImageUrl();
+    }
+
+    public function getPopupPreviewImageUrl(): ?string
+    {
+        $image = data_get($this->form->getRawState(), 'image');
+
+        return $this->resolveImageUrl($this->extractImagePath($image));
+    }
+
+    /**
+     * @param  mixed  $image
+     */
+    protected function extractImagePath(mixed $image): mixed
+    {
+        if ($image instanceof TemporaryUploadedFile) {
+            return $image;
+        }
+
+        if (is_string($image)) {
+            if (TemporaryUploadedFile::canUnserialize($image)) {
+                return TemporaryUploadedFile::unserializeFromLivewireRequest($image);
+            }
+
+            return $image;
+        }
+
+        if (! is_array($image) || $image === []) {
+            return null;
+        }
+
+        foreach ($image as $value) {
+            $path = $this->extractImagePath($value);
+
+            if ($path !== null && $path !== '') {
+                return $path;
+            }
         }
 
         return null;
+    }
+
+    protected function resolveImageUrl(mixed $path): ?string
+    {
+        if ($path === null || $path === '') {
+            return null;
+        }
+
+        if ($path instanceof TemporaryUploadedFile) {
+            try {
+                return $path->temporaryUrl();
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        if (! is_string($path)) {
+            return null;
+        }
+
+        if (TemporaryUploadedFile::canUnserialize($path)) {
+            return $this->resolveImageUrl(TemporaryUploadedFile::unserializeFromLivewireRequest($path));
+        }
+
+        if (str_starts_with($path, 'livewire-tmp/')) {
+            try {
+                return TemporaryUploadedFile::createFromLivewire($path)->temporaryUrl();
+            } catch (\Throwable) {
+                // Fall through to storage checks.
+            }
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::disk('public')->url($path);
+        }
+
+        $normalized = ltrim($path, '/');
+
+        if (str_starts_with($normalized, 'storage/')) {
+            return url('/'.$normalized);
+        }
+
+        return Storage::disk('public')->url($normalized);
     }
 }

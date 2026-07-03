@@ -267,10 +267,19 @@ class PopupResource extends Resource
                     FileUpload::make('image')
                         ->label('Загрузка изображения')
                         ->image()
+                        ->disk('public')
                         ->directory('popups')
+                        ->visibility('public')
+                        ->maxFiles(1)
                         ->openable()
                         ->imageEditor()
+                        ->fetchFileInformation(false)
                         ->live()
+                        ->afterStateUpdated(function ($state, $livewire): void {
+                            if (method_exists($livewire, 'refreshPreviewImageUrl')) {
+                                $livewire->refreshPreviewImageUrl();
+                            }
+                        })
                         ->columnSpanFull(),
                     Toggle::make('settings.desktop_hide_image')
                         ->label('Скрыть фотографию')
