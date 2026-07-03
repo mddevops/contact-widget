@@ -12,11 +12,7 @@
     },
     "autoload": {
         "psr-4": {
-            "SiteApps\\ContactWidget\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
+            "SiteApps\\ContactWidget\\": "src/",
             "SiteApps\\ContactWidget\\Database\\Seeders\\": "database/seeders/"
         }
     },

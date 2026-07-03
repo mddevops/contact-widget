@@ -45,7 +45,10 @@ composer update site-apps/contact-widget
 ```bash
 php artisan contact-widget:install
 php artisan migrate
+php artisan db:seed --class="SiteApps\ContactWidget\Database\Seeders\SocialIconSeeder"
 ```
+
+Иконки не создаются автоматически — сидер нужно запустить отдельно (безопасен для повторного запуска).
 
 ### 3. Filament
 
