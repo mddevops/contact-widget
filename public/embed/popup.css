@@ -1,0 +1,362 @@
+﻿.cbp-root {
+        display: none;
+    }
+
+    .cbp-root.cbp-root--active {
+        display: block;
+    }
+
+    .cbp-box {
+        width: var(--cbp-modal-width-mobile, auto);
+        max-width: calc(100vw - 1.5rem);
+        background: transparent;
+        overflow: hidden;
+    }
+
+    .cbp-layout {
+        display: flex;
+        gap: 0;
+        align-items: stretch;
+        width: auto;
+        min-height: 320px;
+        direction: ltr;
+    }
+
+    .cbp-content {
+        flex: 0 0 auto;
+        min-width: 0;
+        width: var(--cbp-content-width-mobile, 360px);
+        max-width: 100%;
+        padding: var(--cbp-content-padding-mobile, 20px);
+        background: var(--cbp-content-bg, #ffffff);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .cbp-media {
+        flex: 0 0 auto;
+        align-self: stretch;
+        width: var(--cbp-content-width-mobile, 360px);
+        max-width: 100%;
+        min-height: 100%;
+        background-color: transparent;
+        background-repeat: no-repeat;
+        box-sizing: border-box;
+    }
+
+    .cbp-title {
+        margin: 0 0 0.75rem;
+        line-height: 1.2;
+        font-weight: 700;
+        color: #111827;
+        font-size: var(--cbp-title-size-mobile, 32px);
+    }
+
+    .cbp-subtitle {
+        margin: 0 0 1.25rem;
+        line-height: 1.4;
+        color: #4b5563;
+        font-size: var(--cbp-subtitle-size-mobile, 16px);
+    }
+
+    .cbp-list {
+        list-style: none;
+        margin: 0 0 1.5rem;
+        padding: 0;
+        display: grid;
+        gap: 0.5rem;
+    }
+
+    .cbp-list__item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        color: #1f2937;
+        line-height: 1.35;
+        font-size: var(--cbp-benefits-size-mobile, 14px);
+    }
+
+    .cbp-list__icon {
+        flex: 0 0 auto;
+        width: 1.25rem;
+        text-align: center;
+        color: var(--cbp-list-marker-color, #22c55e);
+        font-weight: 700;
+    }
+
+    .cbp-form { display: grid; gap: 0.75rem; }
+    .cbp-form__fields { display: grid; gap: 0.5rem; }
+
+    .cbp-form__input {
+        width: 100%;
+        border: 1px solid #d1d5db;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        background: #fff;
+    }
+
+    .cbp-form__btn {
+        border: 0;
+        padding: 0.85rem 1.25rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .cbp-form__btn-icon {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .cbp-form__btn-icon svg {
+        width: 100%;
+        height: 100%;
+        fill: currentColor;
+    }
+
+    .cbp-form__note {
+        font-size: 0.75rem;
+        line-height: 1.35;
+        color: #6b7280;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .cbp-form__note a { color: inherit; text-decoration: underline; }
+
+    .cbp-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 100000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.22s ease, visibility 0.22s ease;
+    }
+
+    .cbp-modal--open {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    .cbp-modal__backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.72);
+        backdrop-filter: blur(3px);
+    }
+
+    .cbp-modal__viewport {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-height: calc(100dvh - 2rem);
+        overflow: auto;
+        overscroll-behavior: contain;
+    }
+
+    .cbp-modal__dialog {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        outline: none;
+        max-width: none;
+        width: auto;
+        transform: scale(0.96) translateY(10px);
+        transition: transform 0.24s ease;
+    }
+
+    .cbp-modal--open .cbp-modal__dialog {
+        transform: scale(1) translateY(0);
+    }
+
+    .cbp-modal__close {
+        position: absolute;
+        top: 0.35rem;
+        right: 0.35rem;
+        z-index: 5;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        padding: 0;
+        border: 0;
+        border-radius: 9999px;
+        background: #ffffff;
+        color: #111827;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.18);
+        cursor: pointer;
+        transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+
+    .cbp-modal__close:hover {
+        transform: scale(1.05);
+        background: #f9fafb;
+    }
+
+    .cbp-modal__close svg {
+        width: 1.1rem;
+        height: 1.1rem;
+    }
+
+    .cbp-modal__body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    body.cbp-modal-open {
+        overflow: hidden;
+    }
+
+    .cbp-modal .cbp-box {
+        width: var(--cbp-modal-width-mobile, auto);
+        max-width: calc(100vw - 1.5rem);
+    }
+
+    .cbp-modal .cbp-layout {
+        width: auto;
+    }
+
+    @media (max-width: 767px) {
+        .cbp-modal {
+            padding: 0.75rem;
+        }
+
+        .cbp-layout {
+            flex-direction: column;
+            align-items: center;
+            min-height: auto;
+        }
+
+        .cbp-layout--left .cbp-media,
+        .cbp-layout--right .cbp-media,
+        .cbp-layout--left .cbp-content,
+        .cbp-layout--right .cbp-content {
+            order: unset;
+        }
+
+        .cbp-layout--mobile-top { flex-direction: column; }
+        .cbp-layout--mobile-bottom { flex-direction: column-reverse; }
+        .cbp-layout--mobile-no-image { flex-direction: column; }
+
+        .cbp-layout--mobile-no-image .cbp-media,
+        .cbp-media--hide-mobile,
+        .cbp-media--hidden-mobile {
+            display: none !important;
+        }
+
+        .cbp-media {
+            width: var(--cbp-content-width-mobile, 360px) !important;
+            max-width: 100% !important;
+            align-self: center;
+            flex: 0 0 var(--cbp-mobile-image-height-px, 300px) !important;
+            height: var(--cbp-mobile-image-height-px, 300px) !important;
+            min-height: 120px;
+            background-size: var(--cbp-mobile-image-scale, 100%) !important;
+            background-position: var(--cbp-mobile-image-x, center) var(--cbp-mobile-image-y, center) !important;
+        }
+
+        .cbp-content {
+            width: var(--cbp-content-width-mobile, 360px) !important;
+            max-width: 100% !important;
+            flex: 0 0 auto !important;
+            align-self: center;
+            padding: var(--cbp-content-padding-mobile, 20px) !important;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .cbp-box {
+            width: var(--cbp-modal-width-desktop, auto);
+            max-width: calc(100vw - 2rem);
+        }
+
+        .cbp-modal .cbp-box {
+            width: var(--cbp-modal-width-desktop, auto);
+            max-width: calc(100vw - 2rem);
+        }
+
+        .cbp-content {
+            width: var(--cbp-content-width-desktop, 480px);
+            max-width: 100%;
+            flex: 0 0 var(--cbp-content-width-desktop, 480px);
+            padding: var(--cbp-content-padding-desktop, 20px);
+        }
+
+        .cbp-media {
+            width: var(--cbp-image-width-desktop, 480px);
+            max-width: 100%;
+            flex: 0 0 var(--cbp-image-width-desktop, 480px);
+        }
+
+        .cbp-title {
+            font-size: var(--cbp-title-size-desktop, 32px);
+        }
+
+        .cbp-subtitle {
+            font-size: var(--cbp-subtitle-size-desktop, 16px);
+        }
+
+        .cbp-list__item {
+            font-size: var(--cbp-benefits-size-desktop, 14px);
+        }
+
+        .cbp-layout--desktop-no-image .cbp-media,
+        .cbp-media--hide-desktop {
+            display: none !important;
+        }
+
+        .cbp-layout--desktop-no-image .cbp-content {
+            width: var(--cbp-content-width-desktop, 480px) !important;
+            flex: 0 0 var(--cbp-content-width-desktop, 480px) !important;
+            max-width: 100% !important;
+        }
+
+        .cbp-layout--left,
+        .cbp-layout--right,
+        .cbp-layout--mobile-top,
+        .cbp-layout--mobile-bottom,
+        .cbp-layout--mobile-no-image {
+            flex-direction: row;
+        }
+
+        .cbp-layout--left .cbp-media {
+            order: 0;
+        }
+
+        .cbp-layout--left .cbp-content {
+            order: 1;
+        }
+
+        .cbp-layout--right .cbp-media {
+            order: 1;
+        }
+
+        .cbp-layout--right .cbp-content {
+            order: 0;
+        }
+    }

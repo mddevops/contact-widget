@@ -1,0 +1,119 @@
+<?php
+
+namespace SiteApps\ContactWidget\Filament\Resources\SocialWidgetResource\RelationManagers;
+
+use SiteApps\ContactWidget\Enums\SocialWidgetButtonOpenType;
+use SiteApps\ContactWidget\Filament\Forms\SocialIconSelect;
+use SiteApps\ContactWidget\Models\Popup;
+use SiteApps\ContactWidget\Models\SocialIcon;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Table;
+
+class ButtonsRelationManager extends RelationManager
+{
+    protected static string $relationship = 'buttons';
+
+    protected static ?string $title = 'Кнопки';
+
+    public function form(Form $form): Form
+    {
+        return $form->schema(static::buttonFields());
+    }
+
+    public function table(Table $table): Table
+    {
+        return $table
+            ->recordTitleAttribute('title')
+            ->reorderable('sort')
+            ->defaultSort('sort')
+            ->columns([
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Название')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('open_type')
+                    ->label('Открытие')
+                    ->badge(),
+                Tables\Columns\IconColumn::make('enabled')
+                    ->label('Активна')
+                    ->boolean(),
+                Tables\Columns\ViewColumn::make('icon.svg')
+                    ->label('Иконка')
+                    ->view('contact-widget::filament.social.columns.icon-preview'),
+            ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make()->label('Добавить кнопку'),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+
+    /**
+     * @return list<Forms\Components\Component>
+     */
+    public static function buttonFields(): array
+    {
+        return [
+            Forms\Components\Toggle::make('enabled')
+                ->label('Активна')
+                ->default(true)
+                ->inline(false)
+                ->live(),
+            Forms\Components\TextInput::make('title')
+                ->label('Название')
+                ->required()
+                ->maxLength(255)
+                ->default('Позвонить')
+                ->live(),
+            SocialIconSelect::make('icon_id')
+                ->label('Иконка')
+                ->default(fn (): ?int => SocialIcon::query()->where('slug', 'phone')->value('id'))
+                ->live(),
+            Forms\Components\ColorPicker::make('background_color')
+                ->label('Цвет кнопки')
+                ->default('#8e36ff')
+                ->live(),
+            Forms\Components\ColorPicker::make('text_color')
+                ->label('Цвет текста')
+                ->default('#ffffff')
+                ->live(),
+            Forms\Components\Select::make('open_type')
+                ->label('Тип открытия')
+                ->options(SocialWidgetButtonOpenType::class)
+                ->default(SocialWidgetButtonOpenType::Phone)
+                ->live(),
+            Forms\Components\TextInput::make('url')
+                ->label('Ссылка')
+                ->maxLength(500)
+                ->visible(fn (Forms\Get $get): bool => $get('open_type') === 'url')
+                ->live(),
+            Forms\Components\TextInput::make('phone')
+                ->label('Телефон')
+                ->tel()
+                ->maxLength(50)
+                ->visible(fn (Forms\Get $get): bool => $get('open_type') === 'phone')
+                ->live(),
+            Forms\Components\Select::make('popup_id')
+                ->label('Попап')
+                ->options(fn (): array => Popup::query()
+                    ->orderBy('name')
+                    ->pluck('name', 'id')
+                    ->all())
+                ->searchable()
+                ->preload()
+                ->visible(fn (Forms\Get $get): bool => $get('open_type') === 'popup')
+                ->live(),
+            Forms\Components\Hidden::make('sort')
+                ->default(0),
+        ];
+    }
+}
