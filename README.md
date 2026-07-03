@@ -110,4 +110,10 @@ use SiteApps\ContactWidget\Filament\ContactWidgetPlugin;
 
 ## Права (Filament Shield)
 
-После установки сгенерируйте права для ресурсов `Popup`, `SocialWidget`, `SocialIcon`.
+По умолчанию доступ к попапам открыт всем пользователям панели. Если используете Shield, в `.env`:
+
+```
+CONTACT_WIDGET_AUTHORIZE_WITH_SHIELD=true
+```
+
+и сгенерируйте права для ресурсов `Popup`, `SocialWidget`, `SocialIcon`.

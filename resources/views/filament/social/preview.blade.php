@@ -1,10 +1,11 @@
 @php
+    use SiteApps\ContactWidget\Models\SocialIcon;
     use SiteApps\ContactWidget\Support\Social\SocialWidgetMobileSettings;
 
     $icons = $icons ?? [];
     $buttons = $buttons ?? [];
     $popups = $popups ?? [];
-    $phoneIconId = \\SiteApps\\ContactWidget\\Models\\SocialIcon::query()->where('slug', 'phone')->value('id');
+    $phoneIconId = SocialIcon::query()->where('slug', 'phone')->value('id');
     $mobileDefaults = SocialWidgetMobileSettings::defaults();
 @endphp
 

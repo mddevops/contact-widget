@@ -1,5 +1,5 @@
 @php
-    /** @var \\SiteApps\\ContactWidget\\Models\\SocialWidget $widget */
+    /** @var \SiteApps\ContactWidget\Models\SocialWidget $widget */
     use SiteApps\ContactWidget\Support\Social\SocialWidgetMobileSettings;
 
     $mainIconSvg = $widget->mainIcon?->svg ?? '';

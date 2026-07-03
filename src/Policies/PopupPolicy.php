@@ -2,71 +2,86 @@
 
 namespace SiteApps\ContactWidget\Policies;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use SiteApps\ContactWidget\Models\Popup;
-use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PopupPolicy
 {
     use HandlesAuthorization;
 
-    public function viewAny(User $user): bool
+    public function viewAny(Authenticatable $user): bool
     {
-        return $user->can('view_any_callback::popup') || $user->can('view_any_popup');
+        return $this->allows($user, 'view_any_callback::popup', 'view_any_popup');
     }
 
-    public function view(User $user, Popup $popup): bool
+    public function view(Authenticatable $user, Popup $popup): bool
     {
-        return $user->can('view_callback::popup') || $user->can('view_popup');
+        return $this->allows($user, 'view_callback::popup', 'view_popup');
     }
 
-    public function create(User $user): bool
+    public function create(Authenticatable $user): bool
     {
-        return $user->can('create_callback::popup') || $user->can('create_popup');
+        return $this->allows($user, 'create_callback::popup', 'create_popup');
     }
 
-    public function update(User $user, Popup $popup): bool
+    public function update(Authenticatable $user, Popup $popup): bool
     {
-        return $user->can('update_callback::popup') || $user->can('update_popup');
+        return $this->allows($user, 'update_callback::popup', 'update_popup');
     }
 
-    public function delete(User $user, Popup $popup): bool
+    public function delete(Authenticatable $user, Popup $popup): bool
     {
-        return $user->can('delete_callback::popup') || $user->can('delete_popup');
+        return $this->allows($user, 'delete_callback::popup', 'delete_popup');
     }
 
-    public function deleteAny(User $user): bool
+    public function deleteAny(Authenticatable $user): bool
     {
-        return $user->can('delete_any_callback::popup') || $user->can('delete_any_popup');
+        return $this->allows($user, 'delete_any_callback::popup', 'delete_any_popup');
     }
 
-    public function forceDelete(User $user, Popup $popup): bool
+    public function forceDelete(Authenticatable $user, Popup $popup): bool
     {
-        return $user->can('force_delete_callback::popup') || $user->can('force_delete_popup');
+        return $this->allows($user, 'force_delete_callback::popup', 'force_delete_popup');
     }
 
-    public function forceDeleteAny(User $user): bool
+    public function forceDeleteAny(Authenticatable $user): bool
     {
-        return $user->can('force_delete_any_callback::popup') || $user->can('force_delete_any_popup');
+        return $this->allows($user, 'force_delete_any_callback::popup', 'force_delete_any_popup');
     }
 
-    public function restore(User $user, Popup $popup): bool
+    public function restore(Authenticatable $user, Popup $popup): bool
     {
-        return $user->can('restore_callback::popup') || $user->can('restore_popup');
+        return $this->allows($user, 'restore_callback::popup', 'restore_popup');
     }
 
-    public function restoreAny(User $user): bool
+    public function restoreAny(Authenticatable $user): bool
     {
-        return $user->can('restore_any_callback::popup') || $user->can('restore_any_popup');
+        return $this->allows($user, 'restore_any_callback::popup', 'restore_any_popup');
     }
 
-    public function replicate(User $user, Popup $popup): bool
+    public function replicate(Authenticatable $user, Popup $popup): bool
     {
-        return $user->can('replicate_callback::popup') || $user->can('replicate_popup');
+        return $this->allows($user, 'replicate_callback::popup', 'replicate_popup');
     }
 
-    public function reorder(User $user): bool
+    public function reorder(Authenticatable $user): bool
     {
-        return $user->can('reorder_callback::popup') || $user->can('reorder_popup');
+        return $this->allows($user, 'reorder_callback::popup', 'reorder_popup');
+    }
+
+    protected function allows(Authenticatable $user, string ...$permissions): bool
+    {
+        if (! config('contact-widget.authorize_with_shield', false)) {
+            return true;
+        }
+
+        foreach ($permissions as $permission) {
+            if ($user->can($permission)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

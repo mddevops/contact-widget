@@ -23,6 +23,12 @@ return [
         'navigation_group' => 'Виджет связи',
     ],
 
+    /*
+    | When true, PopupPolicy checks Filament Shield permissions (view_any_popup, etc.).
+    | Leave false on projects without Shield — all panel users can manage popups.
+    */
+    'authorize_with_shield' => env('CONTACT_WIDGET_AUTHORIZE_WITH_SHIELD', false),
+
     'embed' => [
         'script' => 'embed/contact-widget.js',
     ],
