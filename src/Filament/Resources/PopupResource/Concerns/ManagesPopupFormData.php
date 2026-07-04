@@ -3,6 +3,7 @@
 namespace SiteApps\ContactWidget\Filament\Resources\PopupResource\Concerns;
 
 use SiteApps\ContactWidget\Support\Popup\PopupDisplayRules;
+use SiteApps\ContactWidget\Support\Popup\PopupImagePath;
 use SiteApps\ContactWidget\Support\Popup\PopupSettings;
 
 trait ManagesPopupFormData
@@ -38,6 +39,10 @@ trait ManagesPopupFormData
 
         $data['settings'] = PopupSettings::merge(array_replace($existingSettings, $submittedSettings));
         $data['display_rules'] = PopupDisplayRules::merge(array_replace($existingRules, $submittedRules));
+
+        if (array_key_exists('image', $data)) {
+            $data['image'] = PopupImagePath::normalizeForStorage($data['image']);
+        }
 
         return $data;
     }

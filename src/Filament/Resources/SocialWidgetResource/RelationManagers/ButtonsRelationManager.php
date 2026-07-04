@@ -58,6 +58,22 @@ class ButtonsRelationManager extends RelationManager
     }
 
     /**
+     * @return array<string, mixed>
+     */
+    public static function defaultItemState(): array
+    {
+        return [
+            'enabled' => true,
+            'title' => 'Позвонить',
+            'background_color' => '#8e36ff',
+            'text_color' => '#ffffff',
+            'open_type' => SocialWidgetButtonOpenType::Phone->value,
+            'icon_id' => SocialIcon::query()->where('slug', 'phone')->value('id'),
+            'sort' => 0,
+        ];
+    }
+
+    /**
      * @return list<Forms\Components\Component>
      */
     public static function buttonFields(): array
@@ -81,10 +97,12 @@ class ButtonsRelationManager extends RelationManager
             Forms\Components\ColorPicker::make('background_color')
                 ->label('Цвет кнопки')
                 ->default('#8e36ff')
+                ->required()
                 ->live(),
             Forms\Components\ColorPicker::make('text_color')
                 ->label('Цвет текста')
                 ->default('#ffffff')
+                ->required()
                 ->live(),
             Forms\Components\Select::make('open_type')
                 ->label('Тип открытия')

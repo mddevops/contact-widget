@@ -124,7 +124,7 @@ class SocialWidget extends Model
         self::query()
             ->where('show_on_site', true)
             ->when($exceptId, fn ($query) => $query->where('id', '!=', $exceptId))
-            ->update(['show_on_site' => false]);
+            ->update(['show_on_site' => false, 'enabled' => false]);
     }
 
     protected static function booted(): void

@@ -16,6 +16,7 @@ use SiteApps\ContactWidget\Services\EmbedService;
 use SiteApps\ContactWidget\Services\PopupService;
 
 use SiteApps\ContactWidget\Support\Popup\PopupDisplayRules;
+use SiteApps\ContactWidget\Support\Popup\PopupImagePath;
 
 use SiteApps\ContactWidget\Support\Popup\PopupSettings;
 
@@ -245,23 +246,15 @@ class Popup extends Model
 
 
     public function hasImage(): bool
-
     {
+        return $this->imageUrl() !== null;
+    }
 
-        $image = $this->image;
+    public function imageUrl(): ?string
+    {
+        $image = is_array($this->image) ? ($this->image[0] ?? null) : $this->image;
 
-
-
-        if (is_array($image)) {
-
-            $image = $image[0] ?? null;
-
-        }
-
-
-
-        return filled($image) && is_string($image) && trim($image) !== '';
-
+        return PopupImagePath::url($image);
     }
 
 

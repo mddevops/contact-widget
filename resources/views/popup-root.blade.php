@@ -24,11 +24,11 @@
 <div class="cbp-root" id="cbp-{{ $popup->id }}" style="padding: 0; border-radius: {{ $radius }}px; {{ $contentCssVarsString }}; --cbp-mobile-image-height-px: {{ $mobileImageHeightPx }}px; --cbp-mobile-image-scale: {{ $mobileImageScale }}%; --cbp-mobile-image-x: {{ $mobileImageX }}; --cbp-mobile-image-y: {{ $mobileImageY }};">
     <div class="cbp-box" style="border-radius: {{ $radius }}px;">
         <div class="cbp-layout {{ $popup->layoutClasses() }}">
-            @if($popup->shouldRenderMedia())
+            @if($popup->shouldRenderMedia() && $popup->imageUrl())
                 <div
                     class="cbp-media {{ $mediaVisibilityClasses }}"
                     style="
-                        background-image: url('{{ asset('storage/'.$popup->image) }}');
+                        background-image: url('{{ $popup->imageUrl() }}');
                         background-size: {{ $imageScale }}%;
                         background-position: {{ $imageX }} {{ $imageY }};
                     "

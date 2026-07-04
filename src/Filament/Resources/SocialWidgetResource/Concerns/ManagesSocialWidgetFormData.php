@@ -15,7 +15,21 @@ trait ManagesSocialWidgetFormData
         return $data;
     }
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        return $this->normalizeSocialWidgetFormData($data);
+    }
+
     protected function mutateFormDataBeforeSave(array $data): array
+    {
+        return $this->normalizeSocialWidgetFormData($data);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function normalizeSocialWidgetFormData(array $data): array
     {
         $data['mobile_settings'] = SocialWidgetMobileSettings::merge($data['mobile_settings'] ?? null);
         $data['enabled'] = (bool) ($data['show_on_site'] ?? false);

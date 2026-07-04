@@ -350,16 +350,6 @@ class PopupResource extends Resource
                         ->hidden(fn (Forms\Get $get): bool => ! static::isMobilePreview($get) || (bool) $get('settings.mobile_hide_image'))
                         ->dehydratedWhenHidden()
                         ->live(),
-                    RangeSlider::make('settings.mobile_image_width_px')
-                        ->label('Ширина изображения')
-                        ->helperText('Ширина блока с фото в пикселях.')
-                        ->min(260)
-                        ->max(480)
-                        ->suffix(' px')
-                        ->default(360)
-                        ->hidden(fn (Forms\Get $get): bool => ! static::isMobilePreview($get) || (bool) $get('settings.mobile_hide_image'))
-                        ->dehydratedWhenHidden()
-                        ->live(),
                     RangeSlider::make('settings.mobile_image_scale')
                         ->label('Масштаб изображения')
                         ->min(50)
