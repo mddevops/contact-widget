@@ -43,6 +43,9 @@ class EmbedService
                 'enabled' => SocialWidgetService::active() !== null,
                 'htmlUrl' => route('contact-widget.embed.widget'),
             ],
+            'form' => [
+                'action' => config('contact-widget.form.action', '/call_me'),
+            ],
         ];
     }
 }

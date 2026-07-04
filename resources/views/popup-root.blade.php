@@ -70,6 +70,7 @@
                         <input
                             class="cbp-form__input"
                             type="tel"
+                            id="phone"
                             name="telephone"
                             placeholder="{{ $settings['phone_placeholder'] }}"
                             autocomplete="off"

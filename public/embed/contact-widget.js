@@ -112,6 +112,7 @@
 
         window.CbpConfig = window.CbpConfig || {};
         window.CbpConfig.renderBaseUrl = config.popups?.renderBaseUrl || '/popups';
+        window.CbpConfig.formAction = config.form?.action || '/call_me';
 
         if (config.popups?.queue?.length && window.CbpQueue) {
             window.CbpQueue.init(config.popups.queue);

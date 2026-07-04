@@ -77,7 +77,35 @@ use SiteApps\ContactWidget\Filament\ContactWidgetPlugin;
 
 ### 5. Формы попапов
 
-В `config/contact-widget.php` укажите endpoint формы (по умолчанию `/call_me`):
+Попап подгружается через AJAX **после** `DOMContentLoaded`, поэтому обычный `mdform.js` (с `querySelectorAll` на старте) на форму попапа не срабатывает.
+
+Пакет сам:
+- вешает маску `#phone` (IMask) при открытии попапа;
+- отправляет `form#callback` внутри `.cbp-root` на `/call_me` (или `form.action` из конфига).
+
+**Интеграция с вашим `mdform.js` (mgo, ym, toastr):**
+
+```html
+<script>
+window.CbpFormHooks = {
+    onSuccess: function (form, formData) {
+        mgo.postForm({
+            name: formData.name,
+            number: formData.telephone,
+            customParam: formData.form_name,
+            comment: formData.comment,
+        });
+        ym(107721773, 'reachGoal', 'send_form');
+        var url = window.location.href;
+        window.location.href = url + (url.includes('?') ? '&' : '?') + 'success=form';
+    },
+};
+</script>
+```
+
+Либо вынесите логику из `mdform.js` в `window.bindCallbackForm = function (form) { ... }` — пакет вызовет её при открытии попапа.
+
+В `config/contact-widget.php`:
 
 ```php
 'form' => [
@@ -85,7 +113,7 @@ use SiteApps\ContactWidget\Filament\ContactWidgetPlugin;
 ],
 ```
 
-На сайте должен работать обработчик заявок (CSRF, `mdform.js` или аналог).
+На странице нужны `<meta name="csrf-token">`, IMask и (опционально) toastr.
 
 ## Конфигурация
 
