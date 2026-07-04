@@ -58,6 +58,35 @@ class ButtonsRelationManager extends RelationManager
     }
 
     /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    public static function normalizeButtonData(array $data): array
+    {
+        $normalized = self::defaultItemState();
+
+        foreach ($data as $key => $value) {
+            if ($value !== null) {
+                $normalized[$key] = $value;
+            }
+        }
+
+        $normalized['enabled'] = true;
+
+        $openType = $normalized['open_type'] ?? null;
+
+        if ($openType instanceof SocialWidgetButtonOpenType) {
+            $openType = $openType->value;
+        }
+
+        $normalized['open_type'] = filled($openType)
+            ? (string) $openType
+            : SocialWidgetButtonOpenType::Phone->value;
+
+        return $normalized;
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public static function defaultItemState(): array
@@ -79,11 +108,9 @@ class ButtonsRelationManager extends RelationManager
     public static function buttonFields(): array
     {
         return [
-            Forms\Components\Toggle::make('enabled')
-                ->label('Активна')
+            Forms\Components\Hidden::make('enabled')
                 ->default(true)
-                ->inline(false)
-                ->live(),
+                ->dehydrated(),
             Forms\Components\TextInput::make('title')
                 ->label('Название')
                 ->required()
@@ -107,7 +134,8 @@ class ButtonsRelationManager extends RelationManager
             Forms\Components\Select::make('open_type')
                 ->label('Тип открытия')
                 ->options(SocialWidgetButtonOpenType::class)
-                ->default(SocialWidgetButtonOpenType::Phone)
+                ->default(SocialWidgetButtonOpenType::Phone->value)
+                ->required()
                 ->live(),
             Forms\Components\TextInput::make('url')
                 ->label('Ссылка')

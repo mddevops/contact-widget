@@ -132,7 +132,18 @@
         gap: 0.5rem;
     }
 
-    .cbp-form__note a { color: inherit; text-decoration: underline; }
+    .cbp-form__note span {
+        display: inline;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .cbp-form__note a {
+        display: inline;
+        color: inherit;
+        text-decoration: underline;
+        white-space: normal;
+    }
 
     .cbp-modal {
         position: fixed;

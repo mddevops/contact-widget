@@ -55,10 +55,12 @@ class SocialWidgetResource extends Resource
                                     ->defaultItems(1)
                                     ->itemLabel(fn (array $state): ?string => $state['title'] ?? 'Кнопка')
                                     ->schema(ButtonsRelationManager::buttonFields())
-                                    ->mutateRelationshipDataBeforeCreateUsing(fn (array $data): array => array_merge(
-                                        ButtonsRelationManager::defaultItemState(),
-                                        $data,
-                                    ))
+                                    ->mutateRelationshipDataBeforeCreateUsing(
+                                        fn (array $data): array => ButtonsRelationManager::normalizeButtonData($data),
+                                    )
+                                    ->mutateRelationshipDataBeforeSaveUsing(
+                                        fn (array $data): array => ButtonsRelationManager::normalizeButtonData($data),
+                                    )
                                     ->live()
                                     ->columnSpanFull(),
                             ]),

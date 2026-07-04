@@ -98,11 +98,7 @@
                     </button>
                     <label class="cbp-form__note">
                         <input type="checkbox" required>
-                        <span>
-                                Подтверждаю что ознакомлен(а) с <a href="{{ url(config('contact-widget.legal.privacy_url', '/privacy')) }}">политикой конфиденциальности</a> и <a
-                                    href="{{ url(config('contact-widget.legal.terms_url', '/terms')) }}">положением об обработке персональных данных</a> и даю согласие на обработку моих персональных
-                                данных
-                        </span>
+                        <span>Подтверждаю что ознакомлен(а) с <a href="{{ url(config('contact-widget.legal.privacy_url', '/privacy')) }}">политикой конфиденциальности</a> и <a href="{{ url(config('contact-widget.legal.terms_url', '/terms')) }}">положением об обработке персональных данных</a> и даю согласие на обработку моих персональных данных</span>
                     </label>
                 </form>
             </div>
