@@ -5,6 +5,7 @@ namespace SiteApps\ContactWidget\Services;
 use SiteApps\ContactWidget\Enums\PopupDisplayMode;
 use SiteApps\ContactWidget\Models\Popup;
 use SiteApps\ContactWidget\Support\Popup\PopupDisplayRules;
+use SiteApps\ContactWidget\Services\Social\SocialWidgetService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -57,6 +58,39 @@ class PopupService
         return self::active()
             ->filter(fn (Popup $popup) => self::matchesPath($popup, $normalizedPath))
             ->values();
+    }
+
+    /**
+     * Popups rendered in the page before mdform.js so existing handlers bind automatically.
+     *
+     * @return Collection<int, Popup>
+     */
+    public static function embedPreload(?string $path = null): Collection
+    {
+        $path = $path ?? request()?->path();
+
+        $popups = self::forPath($path)->keyBy('id');
+
+        $widget = SocialWidgetService::active();
+
+        if ($widget) {
+            $widget->loadMissing('buttons');
+
+            $extraIds = $widget->buttons
+                ->pluck('popup_id')
+                ->filter()
+                ->unique();
+
+            if ($extraIds->isNotEmpty()) {
+                Popup::query()
+                    ->whereIn('id', $extraIds)
+                    ->where('is_active', true)
+                    ->get()
+                    ->each(fn (Popup $popup) => $popups->put($popup->id, $popup));
+            }
+        }
+
+        return $popups->values();
     }
 
     /**

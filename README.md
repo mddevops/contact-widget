@@ -75,45 +75,23 @@ use SiteApps\ContactWidget\Filament\ContactWidgetPlugin;
 <script src="/embed/contact-widget.js" data-api="/embed" defer></script>
 ```
 
-### 5. Формы попапов
+### 5. Формы попапов (mdform.js без изменений)
 
-Попап подгружается через AJAX **после** `DOMContentLoaded`, поэтому обычный `mdform.js` (с `querySelectorAll` на старте) на форму попапа не срабатывает.
+Попапы **рендерятся в HTML** через `@include('contact-widget::embed-script')` ещё до загрузки `mdform.js`.  
+Ваш `mdform.js` на `DOMContentLoaded` находит `form#callback` и `#phone` как обычные формы на странице — счётчики, toastr, mgo, ym остаются вашими.
 
-Пакет сам:
-- вешает маску `#phone` (IMask) при открытии попапа;
-- отправляет `form#callback` внутри `.cbp-root` на `/call_me` (или `form.action` из конфига).
+**Порядок в layout важен:**
 
-**Интеграция с вашим `mdform.js` (mgo, ym, toastr):**
-
-```html
-<script>
-window.CbpFormHooks = {
-    onSuccess: function (form, formData) {
-        mgo.postForm({
-            name: formData.name,
-            number: formData.telephone,
-            customParam: formData.form_name,
-            comment: formData.comment,
-        });
-        ym(107721773, 'reachGoal', 'send_form');
-        var url = window.location.href;
-        window.location.href = url + (url.includes('?') ? '&' : '?') + 'success=form';
-    },
-};
-</script>
+```blade
+@include('contact-widget::embed-script')   {{-- 1. попапы в #cbp-modal-storage --}}
+<script src="/views/js/mdform.js"></script> {{-- 2. маска + submit --}}
 ```
 
-Либо вынесите логику из `mdform.js` в `window.bindCallbackForm = function (form) { ... }` — пакет вызовет её при открытии попапа.
+`embed-script` выводит скрытый `#cbp-modal-storage` с попапами для текущей страницы и кнопок виджета, затем `contact-widget.js`.
 
-В `config/contact-widget.php`:
+Endpoint формы задаётся в `config/contact-widget.php` (`form.action`, по умолчанию `/call_me`) — используется вашим `mdform.js`.
 
-```php
-'form' => [
-    'action' => '/call_me',
-],
-```
-
-На странице нужны `<meta name="csrf-token">`, IMask и (опционально) toastr.
+На странице нужны `<meta name="csrf-token">`, IMask, toastr (как у вас сейчас).
 
 ## Конфигурация
 
