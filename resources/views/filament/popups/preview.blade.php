@@ -78,12 +78,48 @@
             return ! this.settings().mobile_hide_image;
         },
 
-        imagePositionX() {
-            return this.data?.settings?.image_x ?? this.settings().image_x ?? 'center';
+        imageAxisPercent(value, axis) {
+            if (value !== null && value !== undefined && value !== '' && ! Number.isNaN(Number(value))) {
+                return Math.max(0, Math.min(100, parseInt(value, 10)));
+            }
+
+            const normalized = String(value ?? '').toLowerCase().trim();
+
+            if (axis === 'x') {
+                if (normalized === 'left') {
+                    return 0;
+                }
+
+                if (normalized === 'right') {
+                    return 100;
+                }
+
+                return 50;
+            }
+
+            if (normalized === 'bottom') {
+                return 0;
+            }
+
+            if (normalized === 'top') {
+                return 100;
+            }
+
+            return 50;
         },
 
-        imagePositionY() {
-            return this.data?.settings?.image_y ?? this.settings().image_y ?? 'center';
+        backgroundPositionCss(mobile = false) {
+            const prefix = mobile ? 'mobile_' : '';
+            const x = this.imageAxisPercent(
+                this.data?.settings?.[prefix + 'image_x'] ?? this.settings()[prefix + 'image_x'],
+                'x',
+            );
+            const y = this.imageAxisPercent(
+                this.data?.settings?.[prefix + 'image_y'] ?? this.settings()[prefix + 'image_y'],
+                'y',
+            );
+
+            return `${x}% ${100 - y}%`;
         },
 
         imageScale() {
@@ -150,14 +186,12 @@
                 backgroundColor: 'transparent',
                 backgroundImage: this.previewImageUrl ? `url('${this.previewImageUrl}')` : 'none',
                 backgroundSize: `${this.imageScale()}%`,
-                backgroundPosition: `${this.imagePositionX()} ${this.imagePositionY()}`,
+                backgroundPosition: this.backgroundPositionCss(false),
                 backgroundRepeat: 'no-repeat',
             };
         },
 
         mobileMediaStyle() {
-            const x = this.data?.settings?.mobile_image_x ?? this.settings().mobile_image_x ?? 'center';
-            const y = this.data?.settings?.mobile_image_y ?? this.settings().mobile_image_y ?? 'center';
             const imageWidth = this.mobileImageWidthPx();
 
             return {
@@ -170,7 +204,7 @@
                 backgroundColor: 'transparent',
                 backgroundImage: this.previewImageUrl ? `url('${this.previewImageUrl}')` : 'none',
                 backgroundSize: `${this.mobileImageScale()}%`,
-                backgroundPosition: `${x} ${y}`,
+                backgroundPosition: this.backgroundPositionCss(true),
                 backgroundRepeat: 'no-repeat',
             };
         },

@@ -314,25 +314,23 @@ class PopupResource extends Resource
                         ->hidden(fn (Forms\Get $get): bool => static::isMobilePreview($get) || (bool) $get('settings.desktop_hide_image'))
                         ->dehydratedWhenHidden()
                         ->live(),
-                    Select::make('settings.image_x')
+                    RangeSlider::make('settings.image_x')
                         ->label('Горизонтальное позиционирование')
-                        ->options([
-                            'left' => 'Слева',
-                            'center' => 'По центру',
-                            'right' => 'Справа',
-                        ])
-                        ->default('center')
+                        ->helperText('0% — левый край, 100% — правый край.')
+                        ->min(0)
+                        ->max(100)
+                        ->suffix(' %')
+                        ->default(50)
                         ->hidden(fn (Forms\Get $get): bool => static::isMobilePreview($get) || (bool) $get('settings.desktop_hide_image'))
                         ->dehydratedWhenHidden()
                         ->live(),
-                    Select::make('settings.image_y')
+                    RangeSlider::make('settings.image_y')
                         ->label('Вертикальное позиционирование')
-                        ->options([
-                            'top' => 'Сверху',
-                            'center' => 'По центру',
-                            'bottom' => 'Снизу',
-                        ])
-                        ->default('center')
+                        ->helperText('0% — нижний край, 100% — верхний край.')
+                        ->min(0)
+                        ->max(100)
+                        ->suffix(' %')
+                        ->default(50)
                         ->hidden(fn (Forms\Get $get): bool => static::isMobilePreview($get) || (bool) $get('settings.desktop_hide_image'))
                         ->dehydratedWhenHidden()
                         ->live(),
@@ -359,25 +357,23 @@ class PopupResource extends Resource
                         ->hidden(fn (Forms\Get $get): bool => ! static::isMobilePreview($get) || (bool) $get('settings.mobile_hide_image'))
                         ->dehydratedWhenHidden()
                         ->live(),
-                    Select::make('settings.mobile_image_x')
+                    RangeSlider::make('settings.mobile_image_x')
                         ->label('Горизонтальное позиционирование')
-                        ->options([
-                            'left' => 'Слева',
-                            'center' => 'По центру',
-                            'right' => 'Справа',
-                        ])
-                        ->default('center')
+                        ->helperText('0% — левый край, 100% — правый край.')
+                        ->min(0)
+                        ->max(100)
+                        ->suffix(' %')
+                        ->default(50)
                         ->hidden(fn (Forms\Get $get): bool => ! static::isMobilePreview($get) || (bool) $get('settings.mobile_hide_image'))
                         ->dehydratedWhenHidden()
                         ->live(),
-                    Select::make('settings.mobile_image_y')
+                    RangeSlider::make('settings.mobile_image_y')
                         ->label('Вертикальное позиционирование')
-                        ->options([
-                            'top' => 'Сверху',
-                            'center' => 'По центру',
-                            'bottom' => 'Снизу',
-                        ])
-                        ->default('center')
+                        ->helperText('0% — нижний край, 100% — верхний край.')
+                        ->min(0)
+                        ->max(100)
+                        ->suffix(' %')
+                        ->default(50)
                         ->hidden(fn (Forms\Get $get): bool => ! static::isMobilePreview($get) || (bool) $get('settings.mobile_hide_image'))
                         ->dehydratedWhenHidden()
                         ->live(),

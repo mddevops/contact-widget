@@ -288,7 +288,7 @@
             height: var(--cbp-mobile-image-height-px, 300px) !important;
             min-height: 120px;
             background-size: var(--cbp-mobile-image-scale, 100%) !important;
-            background-position: var(--cbp-mobile-image-x, center) var(--cbp-mobile-image-y, center) !important;
+            background-position: var(--cbp-mobile-image-position, 50% 50%) !important;
         }
 
         .cbp-content {

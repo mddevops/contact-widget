@@ -34,16 +34,16 @@ class PopupSettings
             'content_width' => 480,
             'image_width' => 480,
             'image_scale' => 100,
-            'image_x' => 'center',
-            'image_y' => 'center',
+            'image_x' => 50,
+            'image_y' => 50,
             'desktop_hide_image' => false,
             'mobile_hide_image' => false,
             'mobile_content_width' => 360,
             'mobile_image_position' => 'top',
             'mobile_image_height_px' => 300,
             'mobile_image_scale' => 100,
-            'mobile_image_x' => 'center',
-            'mobile_image_y' => 'center',
+            'mobile_image_x' => 50,
+            'mobile_image_y' => 50,
         ], self::formDefaults());
     }
 
@@ -89,6 +89,10 @@ class PopupSettings
         $merged['button_icon_size'] = max(12, min(48, (int) ($merged['button_icon_size'] ?? 18)));
         $merged['button_icon_color'] = self::buttonIconColor($merged);
         $merged['image_position'] = self::imagePosition($merged)->value;
+        $merged['image_x'] = self::imageAxisPercent($merged, 'image_x');
+        $merged['image_y'] = self::imageAxisPercent($merged, 'image_y');
+        $merged['mobile_image_x'] = self::imageAxisPercent($merged, 'mobile_image_x');
+        $merged['mobile_image_y'] = self::imageAxisPercent($merged, 'mobile_image_y');
 
         return $merged;
     }
@@ -249,6 +253,50 @@ class PopupSettings
         $value = (int) ($data[$key] ?? ($fallbackKey ? ($data[$fallbackKey] ?? $default) : $default));
 
         return max($min, min($max, $value));
+    }
+
+    /**
+     * User-facing axis: 0–100. Horizontal: 0 = left, 100 = right. Vertical: 0 = bottom, 100 = top.
+     *
+     * @param  array<string, mixed>|null  $settings
+     */
+    public static function imageAxisPercent(?array $settings, string $key, int $default = 50): int
+    {
+        $value = ($settings ?? [])[$key] ?? $default;
+
+        if (is_numeric($value)) {
+            return max(0, min(100, (int) $value));
+        }
+
+        $normalized = strtolower(trim((string) $value));
+
+        if (str_contains($key, '_x')) {
+            return match ($normalized) {
+                'left' => 0,
+                'right' => 100,
+                default => 50,
+            };
+        }
+
+        return match ($normalized) {
+            'bottom' => 0,
+            'top' => 100,
+            default => 50,
+        };
+    }
+
+    /**
+     * CSS background-position from user axis percents.
+     *
+     * @param  array<string, mixed>|null  $settings
+     */
+    public static function backgroundPositionCss(?array $settings, bool $mobile = false): string
+    {
+        $prefix = $mobile ? 'mobile_' : '';
+        $x = self::imageAxisPercent($settings, $prefix.'image_x');
+        $y = self::imageAxisPercent($settings, $prefix.'image_y');
+
+        return $x.'% '.(100 - $y).'%';
     }
 
     /**

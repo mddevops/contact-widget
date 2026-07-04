@@ -7,12 +7,10 @@
     $settings = $popup->resolvedSettings();
     $radius = (int) ($settings['border_radius'] ?? 16);
     $imageScale = PopupSettings::imageScale($settings);
-    $imageX = $settings['image_x'] ?? 'center';
-    $imageY = $settings['image_y'] ?? 'center';
+    $imagePosition = PopupSettings::backgroundPositionCss($settings, false);
     $mobileImageHeightPx = PopupSettings::mobileImageHeightPx($settings);
     $mobileImageScale = PopupSettings::mobileImageScale($settings);
-    $mobileImageX = $settings['mobile_image_x'] ?? 'center';
-    $mobileImageY = $settings['mobile_image_y'] ?? 'center';
+    $mobileImagePosition = PopupSettings::backgroundPositionCss($settings, true);
     $mediaVisibilityClasses = $popup->mediaVisibilityClasses();
     $buttonIconSvg = $popup->buttonIconSvg();
     $buttonIconSize = (int) ($settings['button_icon_size'] ?? 18);
@@ -21,7 +19,7 @@
     $contentCssVarsString = collect($contentCssVars)->map(fn (string $value, string $key): string => $key.': '.$value)->implode('; ');
 @endphp
 
-<div class="cbp-root" id="cbp-{{ $popup->id }}" style="padding: 0; border-radius: {{ $radius }}px; {{ $contentCssVarsString }}; --cbp-mobile-image-height-px: {{ $mobileImageHeightPx }}px; --cbp-mobile-image-scale: {{ $mobileImageScale }}%; --cbp-mobile-image-x: {{ $mobileImageX }}; --cbp-mobile-image-y: {{ $mobileImageY }};">
+<div class="cbp-root" id="cbp-{{ $popup->id }}" style="padding: 0; border-radius: {{ $radius }}px; {{ $contentCssVarsString }}; --cbp-mobile-image-height-px: {{ $mobileImageHeightPx }}px; --cbp-mobile-image-scale: {{ $mobileImageScale }}%; --cbp-mobile-image-position: {{ $mobileImagePosition }};">
     <div class="cbp-box" style="border-radius: {{ $radius }}px;">
         <div class="cbp-layout {{ $popup->layoutClasses() }}">
             @if($popup->shouldRenderMedia() && $popup->imageUrl())
@@ -30,7 +28,7 @@
                     style="
                         background-image: url('{{ $popup->imageUrl() }}');
                         background-size: {{ $imageScale }}%;
-                        background-position: {{ $imageX }} {{ $imageY }};
+                        background-position: {{ $imagePosition }};
                     "
                     role="img"
                     aria-label="{{ $popup->title }}"
