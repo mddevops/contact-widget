@@ -43,6 +43,10 @@ class EmbedService
                     'checkIntervalMs' => (int) config('contact-widget.popup.busy_check_interval_ms', 400),
                     'busySelectors' => config('contact-widget.popup.busy_selectors', []),
                 ],
+                'scroll' => [
+                    'settleMs' => (int) config('contact-widget.popup.scroll_settle_ms', 400),
+                    'minTimeOnPageMs' => (int) config('contact-widget.popup.scroll_min_time_on_page_ms', 0),
+                ],
             ],
             'widget' => [
                 'enabled' => SocialWidgetService::active() !== null,

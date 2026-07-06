@@ -40,5 +40,7 @@ return [
         'idle_after_block_ms' => (int) env('CONTACT_WIDGET_POPUP_IDLE_AFTER_BLOCK_MS', 3000),
         'busy_check_interval_ms' => (int) env('CONTACT_WIDGET_POPUP_BUSY_CHECK_INTERVAL_MS', 400),
         'busy_selectors' => [],
+        'scroll_settle_ms' => (int) env('CONTACT_WIDGET_POPUP_SCROLL_SETTLE_MS', 400),
+        'scroll_min_time_on_page_ms' => (int) env('CONTACT_WIDGET_POPUP_SCROLL_MIN_TIME_MS', 0),
     ],
 ];

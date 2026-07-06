@@ -279,6 +279,80 @@
         return (scrollTop / docHeight) * 100;
     }
 
+    function getScrollTop() {
+        return window.scrollY || document.documentElement.scrollTop || 0;
+    }
+
+    function createScrollEngagementGate(config) {
+        config = config || {};
+
+        var settleMs = Math.max(0, config.settleMs || 400);
+        var minTimeOnPageMs = Math.max(0, config.minTimeOnPageMs || 0);
+        var userEngaged = false;
+        var trackingReady = false;
+        var readyAt = 0;
+        var baselineScrollTop = 0;
+
+        function markUserEngaged() {
+            if (! trackingReady) {
+                return;
+            }
+
+            userEngaged = true;
+        }
+
+        function onScroll() {
+            if (! trackingReady) {
+                return;
+            }
+
+            if (Math.abs(getScrollTop() - baselineScrollTop) > 8) {
+                userEngaged = true;
+            }
+        }
+
+        function isEngaged() {
+            if (! trackingReady || ! userEngaged) {
+                return false;
+            }
+
+            if (minTimeOnPageMs > 0 && (Date.now() - readyAt) < minTimeOnPageMs) {
+                return false;
+            }
+
+            return true;
+        }
+
+        function whenReady(callback) {
+            var startTracking = function () {
+                baselineScrollTop = getScrollTop();
+                readyAt = Date.now();
+                trackingReady = true;
+                callback();
+            };
+
+            var delayStart = function () {
+                setTimeout(startTracking, settleMs);
+            };
+
+            if (document.readyState === 'complete') {
+                delayStart();
+            } else {
+                window.addEventListener('load', delayStart, { once: true });
+            }
+        }
+
+        window.addEventListener('wheel', markUserEngaged, { passive: true });
+        window.addEventListener('touchmove', markUserEngaged, { passive: true });
+        window.addEventListener('keydown', markUserEngaged, { passive: true });
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        return {
+            isEngaged: isEngaged,
+            whenReady: whenReady,
+        };
+    }
+
     window.CbpQueue = {
         init: function (popups, options) {
             if (! Array.isArray(popups) || popups.length === 0 || typeof window.CbpModal === 'undefined') {
@@ -358,6 +432,14 @@
                 return (popup.trigger || 'delay') === 'scroll';
             });
 
+            const scrollGate = scrollPopups.length > 0
+                ? createScrollEngagementGate(
+                    (options && options.scroll)
+                    || (window.CbpConfig && window.CbpConfig.scroll)
+                    || {},
+                )
+                : null;
+
             const processDelayQueue = function (index) {
                 if (index >= delayPopups.length) {
                     return;
@@ -382,6 +464,10 @@
                 const tryOpen = function () {
                     if (triggered) {
                         return true;
+                    }
+
+                    if (! scrollGate || ! scrollGate.isEngaged()) {
+                        return false;
                     }
 
                     if (getScrollPercent() < (popup.scrollPercent || 50)) {
@@ -421,11 +507,15 @@
                 };
 
                 window.addEventListener('scroll', onScroll, { passive: true });
-                tryOpen();
             };
 
             processDelayQueue(0);
-            processScrollQueue(0);
+
+            if (scrollGate) {
+                scrollGate.whenReady(function () {
+                    processScrollQueue(0);
+                });
+            }
 
             exitPopups.forEach(function (popup) {
                 let exitTriggered = false;
