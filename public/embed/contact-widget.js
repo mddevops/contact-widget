@@ -113,9 +113,12 @@
         window.CbpConfig = window.CbpConfig || {};
         window.CbpConfig.renderBaseUrl = config.popups?.renderBaseUrl || '/popups';
         window.CbpConfig.formAction = config.form?.action || '/call_me';
+        window.CbpConfig.idleGate = config.popups?.idleGate || {};
 
         if (config.popups?.queue?.length && window.CbpQueue) {
-            window.CbpQueue.init(config.popups.queue);
+            window.CbpQueue.init(config.popups.queue, {
+                idleGate: config.popups?.idleGate,
+            });
         }
 
         if (! config.widget?.enabled || ! config.widget?.htmlUrl) {

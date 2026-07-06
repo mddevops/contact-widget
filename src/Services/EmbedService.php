@@ -38,6 +38,11 @@ class EmbedService
             'popups' => [
                 'renderBaseUrl' => url('/popups'),
                 'queue' => PopupService::queuePayload($normalizedPath),
+                'idleGate' => [
+                    'idleAfterBlockMs' => (int) config('contact-widget.popup.idle_after_block_ms', 3000),
+                    'checkIntervalMs' => (int) config('contact-widget.popup.busy_check_interval_ms', 400),
+                    'busySelectors' => config('contact-widget.popup.busy_selectors', []),
+                ],
             ],
             'widget' => [
                 'enabled' => SocialWidgetService::active() !== null,

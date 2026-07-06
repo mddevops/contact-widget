@@ -32,4 +32,13 @@ return [
     'embed' => [
         'script' => 'embed/contact-widget.js',
     ],
+
+    /*
+    | Auto-popup idle gate: wait while other modals (Bootstrap, Fancybox, etc.) are open.
+    */
+    'popup' => [
+        'idle_after_block_ms' => (int) env('CONTACT_WIDGET_POPUP_IDLE_AFTER_BLOCK_MS', 3000),
+        'busy_check_interval_ms' => (int) env('CONTACT_WIDGET_POPUP_BUSY_CHECK_INTERVAL_MS', 400),
+        'busy_selectors' => [],
+    ],
 ];
